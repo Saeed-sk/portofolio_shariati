@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa&family=Encode+Sans+Condensed&family=Fjalla+One&display=swap');
+
+.ql-editor {
+    min-height: 18em;
+}
+
+.quill {
+    border-radius: 100% !important;
+}
+
+.ql-picker.ql-font .ql-picker-label[data-value="Comfortaa"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="Comfortaa"]::before {
+    font-family: "Comfortaa", sans-serif;
+    content: "Comfortaa" !important;
+}
+
+.ql-picker.ql-font .ql-picker-label[data-value="Encode-Sans-Condensed"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="Encode-Sans-Condensed"]::before {
+    font-family: "Encode Sans Condensed", sans-serif;
+    content: "Encode Sans" !important;
+}
+
+.ql-picker.ql-font .ql-picker-label[data-value="Fjalla-One"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="Fjalla-One"]::before {
+    font-family: "Fjalla One", sans-serif;
+    content: "Fjalla-One" !important;
+}
+
+.ql-font-Comfortaa {
+    font-family: "Comfortaa", sans-serif;
+}
+
+.ql-font-Encode-Sans-Condensed {
+    font-family: "Encode Sans Condensed", sans-serif;
+}
+
+.ql-font-Fjalla-One {
+    font-family: "Fjalla One", sans-serif;
+}
+
+body{
+    font-family: "Comfortaa" , sans-serif !important;
+}
