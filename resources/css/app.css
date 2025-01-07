@@ -1,42 +1,43 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-body{
+body {
     @apply bg-gray-400
 }
 
 @layer components {
-    /* HTML: <div class="loader"></div> */
+
     .loader {
-        width: fit-content;
-        font-size: 40px;
-        font-family: monospace;
-        font-weight: bold;
-        text-transform: uppercase;
-        color: #0000;
-        -webkit-text-stroke: 1px #000;
-        --g:conic-gradient(#000 0 0) no-repeat text;
-        background:var(--g) 0,var(--g) 1ch,var(--g) 2ch,var(--g) 3ch,var(--g) 4ch,var(--g) 5ch,var(--g) 6ch;
-        animation:
-            l18-0 2s linear infinite alternate,
-            l18-1 4s linear infinite;
+        height: 20px;
+        aspect-ratio: 2.5;
+        --_g: no-repeat radial-gradient(farthest-side, #e8dfdf 90%, #0000);
+        background: var(--_g), var(--_g), var(--_g), var(--_g);
+        background-size: 20% 50%;
+        animation: l43 1s infinite linear;
     }
-    .loader:before {
-        content: "Loading";
-    }
-    @keyframes l18-0 {
-        0%     {background-size: 1ch 0   ,1ch 0   ,1ch 0   ,1ch 0   ,1ch 0   ,1ch 0   ,1ch 0   }
-        14.28% {background-size: 1ch 100%,1ch 50% ,1ch 0   ,1ch 0   ,1ch 0   ,1ch 0   ,1ch 0   }
-        28.57% {background-size: 1ch 100%,1ch 100%,1ch 50% ,1ch 0   ,1ch 0   ,1ch 0   ,1ch 0   }
-        42.85% {background-size: 1ch 100%,1ch 100%,1ch 100%,1ch 50% ,1ch 0   ,1ch 0   ,1ch 0   }
-        57.14% {background-size: 1ch 100%,1ch 100%,1ch 100%,1ch 100%,1ch 50% ,1ch 0   ,1ch 0   }
-        71.43% {background-size: 1ch 100%,1ch 100%,1ch 100%,1ch 100%,1ch 100%,1ch 50% ,1ch 0   }
-        85.71% {background-size: 1ch 100%,1ch 100%,1ch 100%,1ch 100%,1ch 100%,1ch 100%,1ch 50% }
-        100%   {background-size: 1ch 100%,1ch 100%,1ch 100%,1ch 100%,1ch 100%,1ch 100%,1ch 100%}
-    }
-    @keyframes l18-1 {
-        0%,50%    {background-position-y: 100%}
-        50.01%,to {background-position-y: 0   }
+
+    @keyframes l43 {
+        0% {
+            background-position: calc(0 * 100% / 3) 50%, calc(1 * 100% / 3) 50%, calc(2 * 100% / 3) 50%, calc(3 * 100% / 3) 50%
+        }
+        16.67% {
+            background-position: calc(0 * 100% / 3) 0, calc(1 * 100% / 3) 50%, calc(2 * 100% / 3) 50%, calc(3 * 100% / 3) 50%
+        }
+        33.33% {
+            background-position: calc(0 * 100% / 3) 100%, calc(1 * 100% / 3) 0, calc(2 * 100% / 3) 50%, calc(3 * 100% / 3) 50%
+        }
+        50% {
+            background-position: calc(0 * 100% / 3) 50%, calc(1 * 100% / 3) 100%, calc(2 * 100% / 3) 0, calc(3 * 100% / 3) 50%
+        }
+        66.67% {
+            background-position: calc(0 * 100% / 3) 50%, calc(1 * 100% / 3) 50%, calc(2 * 100% / 3) 100%, calc(3 * 100% / 3) 0
+        }
+        83.33% {
+            background-position: calc(0 * 100% / 3) 50%, calc(1 * 100% / 3) 50%, calc(2 * 100% / 3) 50%, calc(3 * 100% / 3) 100%
+        }
+        100% {
+            background-position: calc(0 * 100% / 3) 50%, calc(1 * 100% / 3) 50%, calc(2 * 100% / 3) 50%, calc(3 * 100% / 3) 50%
+        }
     }
 
     .global-radius {
@@ -176,17 +177,23 @@ body{
         border: 1px solid rgba(255, 255, 255, 0.18);
     }
 }
-.group-swiper .swiper-slide .image{
+
+.group-swiper .swiper-slide .image {
     height: 70%;
 }
-.group-swiper .slider-active .image{
+
+.group-swiper .slider-active .image {
     height: 100%;
 }
-.group-swiper .swiper-slide .text{
+
+.group-swiper .swiper-slide .text {
     opacity: 0;
 }
+
 .group-swiper .slider-active .text {
     opacity: 1;
 }
 
-
+.swiper-button-next, .swiper-button-prev {
+    color: black;
+}

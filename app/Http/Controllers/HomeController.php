@@ -18,7 +18,7 @@ class HomeController extends Controller
                 'id' => $request->method() === 'PUT' ? 'required|exists:homes,id' : 'nullable',
                 'type' => 'required|in:image,video',
                 'alt' => 'required|string',
-                'file' => $request->hasFile('file') || $request['id'] === null ? 'required|file|mimes:jpg,jpeg,png,webp|max:10240' : 'nullable',
+                'file' => $request->hasFile('file') || $request['id'] === null ? 'required|file|mimes:jpeg,png,jpg,gif,avif,webp|max:5120' : 'nullable',
                 'color' => ['required', 'regex:/^(linear-gradient|radial-gradient)\((.+)\)$/i'],
                 'content' => 'required|string',
                 'status' => 'required|in:active,inactive',

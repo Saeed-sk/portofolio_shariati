@@ -1,7 +1,7 @@
 import React from 'react';
 import {useForm} from "@inertiajs/react";
 
-const Create = ({link}) => {
+const Create = ({link, inactive = false}) => {
     const {data, setData, errors, post, processing} = useForm({
             template: 'info',
             id: link.id,
@@ -43,6 +43,7 @@ const Create = ({link}) => {
                             <label className="form-label" htmlFor={'name'}>title</label>
                             <input
                                 type="text"
+                                disabled={inactive}
                                 id={'name'}
                                 placeholder={'add alt text for the image...'}
                                 className="form-input w-full"

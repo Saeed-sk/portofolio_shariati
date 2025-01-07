@@ -32,6 +32,7 @@ const Create = ({errors}) => {
                     content: '',
                     preview: URL.createObjectURL(file),
                     pdf: null,
+                    background: null,
                     alt: ''
                 },
             ]);
@@ -45,6 +46,12 @@ const Create = ({errors}) => {
         setData('images', updatedImages);
     };
 
+    // Handle background file uploads for an image
+    const onHandleChangeBackground = (event, index) => {
+        const updatedImages = [...data.images];
+        updatedImages[index].background = event.target.files[0];
+        setData('images', updatedImages);
+    };
     // Handle content changes for each image
     const onHandleChangeImageData = (content, index) => {
         const updatedImages = [...data.images];
@@ -93,6 +100,7 @@ const Create = ({errors}) => {
                                 <option disabled value="not_selected">Select a template:</option>
                                 <option value="single">Single Template</option>
                                 <option value="multiple">Group Template</option>
+                                <option value="pdfTemplate">Pdf Template</option>
                             </select>
                             {errors?.template && <p className="form-error">{errors.template}</p>}
                         </div>
@@ -108,7 +116,7 @@ const Create = ({errors}) => {
                                 {/* Image preview */}
                                 <h3>Image ({image.id})</h3>
                                 <div className="h-52 w-full object-cover rounded-lg overflow-hidden relative">
-                                    <img src={image.preview} alt={image.alt || `Image ${image.id}`} />
+                                    <img src={image.preview} alt={image.alt || `Image ${image.id}`}/>
 
                                     <button
                                         type="button"
@@ -120,18 +128,23 @@ const Create = ({errors}) => {
                                         Delete
                                     </button>
                                 </div>
-                                {errors?.[`images.${index}.file`] && <p className="form-error">{errors[`images.${index}.file`]}</p>}
+                                {errors?.[`images.${index}.file`] &&
+                                    <p className="form-error">{errors[`images.${index}.file`]}</p>}
 
                                 {/* Image content */}
-                                <div className="w-full">
-                                    <label className="form-label" htmlFor={`content-${index}`}>Content</label>
-                                    <TextEditor
-                                        name={'content'}
-                                        value={image.content}
-                                        onChange={(content) => setData((prev) => ({...prev, content}))}
-                                    />
-                                    {errors?.[`images.${index}.content`] && <p className="form-error">{errors[`images.${index}.content`]}</p>}
-                                </div>
+                                {data.template !== 'pdfTemplate' && (
+                                    <div className="w-full">
+                                        <label className="form-label" htmlFor={`content-${index}`}>Content</label>
+                                        <TextEditor
+                                            name={'content'}
+                                            value={image.content}
+                                            onChange={(content) => onHandleChangeImageData(content, index)}
+                                        />
+                                        {errors?.[`images.${index}.content`] &&
+                                            <p className="form-error">{errors[`images.${index}.content`]}</p>}
+                                    </div>
+                                )}
+
 
                                 {/* Alt text */}
                                 <div className="w-full">
@@ -143,8 +156,23 @@ const Create = ({errors}) => {
                                         value={image.alt}
                                         onChange={(event) => onHandleChangeAlt(event, index)}
                                     />
-                                    {errors?.[`images.${index}.alt`] && <p className="form-error">{errors[`images.${index}.alt`]}</p>}
+                                    {errors?.[`images.${index}.alt`] &&
+                                        <p className="form-error">{errors[`images.${index}.alt`]}</p>}
                                 </div>
+                                {/* PDF upload */}
+                                <div className="w-full">
+                                    <label className="form-label" htmlFor={`pdf-${index}`}>background</label>
+                                    <input
+                                        type="file"
+                                        id={`background-${index}`}
+                                        className="form-input w-full"
+                                        accept="image/*"
+                                        onChange={(event) => onHandleChangeBackground(event, index)}
+                                    />
+                                    {errors?.[`images.${index}.background`] &&
+                                        <p className="form-error">{errors[`images.${index}.background`]}</p>}
+                                </div>
+
 
                                 {/* PDF upload */}
                                 <div className="w-full">
@@ -156,7 +184,8 @@ const Create = ({errors}) => {
                                         accept=".pdf"
                                         onChange={(event) => onHandleChangePdf(event, index)}
                                     />
-                                    {errors?.[`images.${index}.pdf`] && <p className="form-error">{errors[`images.${index}.pdf`]}</p>}
+                                    {errors?.[`images.${index}.pdf`] &&
+                                        <p className="form-error">{errors[`images.${index}.pdf`]}</p>}
                                 </div>
                             </div>
                         ))}

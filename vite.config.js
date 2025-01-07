@@ -7,13 +7,12 @@ export default defineConfig({
         input: [
             'resources/css/app.css',
             'resources/css/font.css',
-            'resources/css/swiper-bundle.min.css',
             'resources/css/quill.snow.css',
+            'resources/css/swiper-bundle.min.css',
             'resources/css/locomotive-scroll.min.css',
             'resources/js/app.jsx',
-            'resources/js/main.js',
+            'resources/js/section.js',
             'resources/js/navbar.js',
-            'resources/js/pdf.js',
             'resources/js/home.js'
         ],
         refresh: true,

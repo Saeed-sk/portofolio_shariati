@@ -97,7 +97,7 @@ const Index = ({section, links, assetsPath}) => {
                     </form>
                 </div>
                 {links?.map((link, index) => (
-                    <Create key={index} link={link}/>
+                    <Create inactive={true} key={index} link={link}/>
                 ))}
             </div>
         </AuthenticatedLayout>

@@ -25,10 +25,16 @@ class MainController extends Controller
     public function section($id)
     {
         $section = Section::query()->where('id', $id)->with('images')->first();
-        if ($section['template'] === 'single') {
-            return view('sections.single', ['section' => $section]);
-        } else {
-            return view('sections.group', ['section' => $section]);
+        if ($section){
+            if ($section['template'] === 'single') {
+                return view('sections.single', ['section' => $section]);
+            } elseif ($section['template'] === 'multiple') {
+                return view('sections.group', ['section' => $section]);
+            } else {
+                return view('sections.pdf', ['section' => $section]);
+            }
+        }else{
+            abort(404);
         }
     }
 

@@ -15,6 +15,7 @@ class MenuComponent extends Component
      */
     public ?Section $info;
     public \Illuminate\Database\Eloquent\Collection $links;
+    public \Illuminate\Database\Eloquent\Collection $menuLinks;
     public \Illuminate\Database\Eloquent\Collection $titles;
     public bool $showInfo;
 
@@ -23,7 +24,8 @@ class MenuComponent extends Component
         $this->showInfo = $showInfo;
         $this->info = Section::query()->where('template', 'info')->with('images')->first();
         $this->links = Link::query()->where('template', 'info')->get();
-        $this->titles = Section::query()->where('template', 'single')->orWhere('template', 'multiple')->get(['title', 'id']);
+        $this->menuLinks = Link::query()->where('template', 'menu')->get();
+        $this->titles = Section::query()->where('template', 'single')->orWhere('template', 'multiple')->orWhere('template', 'pdfTemplate')->get(['title', 'id']);
     }
 
     /**

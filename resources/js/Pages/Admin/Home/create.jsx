@@ -33,7 +33,6 @@ const Create = ({type}) => {
         }
     }
 
-    console.log(data)
     function onHandleChange(event) {
         setData(event.target.name, event.target.value);
     }

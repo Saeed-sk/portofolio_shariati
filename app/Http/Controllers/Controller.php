@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\File;
 
 abstract class Controller
 {
+    protected string $defaultPath = 'files/';
+
     protected function saveFile($file, $type): string
     {
         // Define storage path for files using Laravel Storage system
@@ -14,10 +16,12 @@ abstract class Controller
             $dir = 'home/images';
         } elseif ($type == 'video') {
             $dir = 'home/videos';
-        }elseif ($type == 'pdf') {
+        } elseif ($type == 'pdf') {
             $dir = 'sections/pdfs';
-        }elseif ($type == 'section') {
+        } elseif ($type == 'section') {
             $dir = 'sections/images';
+        } elseif ($type == 'background') {
+            $dir = 'sections/backgrounds';
         }
 
         // Generate a unique file name to avoid collision (you can use UUID or unique hash)
@@ -25,7 +29,7 @@ abstract class Controller
 
         // Check if the directory exists, otherwise create it
         if (!empty($file)) {
-            $file->move('storage/' . $dir, $fileName);
+            $file->move($this->defaultPath . $dir, $fileName);
         }
 
         return $dir . '/' . $fileName;
@@ -34,9 +38,9 @@ abstract class Controller
     protected function deleteFile($file): void
     {
         // Check if the directory exists, otherwise create it
-        if (File::exists('storage/' . $file->url)) {
+        if (File::exists($this->defaultPath . $file->url)) {
 
-            File::delete('storage/' . $file->url);
+            File::delete($this->defaultPath . $file->url);
         }
     }
 }

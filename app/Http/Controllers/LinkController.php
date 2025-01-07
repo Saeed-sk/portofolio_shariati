@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Link;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class LinkController extends Controller
 {
@@ -22,7 +23,8 @@ class LinkController extends Controller
      */
     public function index()
     {
-        //
+        $links = Link::query()->where('template', 'menu')->get()->toArray();
+        return Inertia::render('Admin/links/links', ['links' => $links]);
     }
 
     /**
@@ -65,7 +67,11 @@ class LinkController extends Controller
         $validated = $this->validate($request);
         $link->update($validated);
 
-        return to_route('contact.index');
+        if ($link['template'] == 'info') {
+            return to_route('info.index');
+        } else {
+            return to_route('links.menu.get');
+        }
     }
 
     /**

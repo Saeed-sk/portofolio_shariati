@@ -34,7 +34,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
-            'assetsPath' => asset('storage') . '/',
+            'assetsPath' => asset('files').'/',
         ];
     }
 }

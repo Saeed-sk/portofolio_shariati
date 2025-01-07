@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Section;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -17,32 +18,13 @@ class SectionController extends Controller
         return $request->validate([
             'id' => $request->method() === 'PUT' ? 'required|exists:sections,id' : 'nullable',
             'title' => ['required', 'string', 'max:255', $request->method() === 'POST' ? 'unique:sections' : Rule::unique('sections')->ignore($request->id)],
-            'template' => 'required|in:single,multiple',
+            'template' => 'required|in:single,multiple,pdfTemplate',
             'images' => 'required|array',
-            'images.*.content' => 'required|string',
+            'images.*.content' => $request->template === 'pdfTemplate' ? 'nullable' : 'required|string',
             'images.*.alt' => 'required|string',
-            'images.*.file' => 'required|file|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'images.*.file' => 'required|file|mimes:jpeg,png,jpg,gif,avif,webp|max:5120',
+            'images.*.background' => 'required|file|mimes:jpeg,png,jpg,gif,avif,webp|max:5120',
             'images.*.pdf' => 'required|file|mimes:pdf|max:5120',
-        ]);
-    }
-
-    protected function saveImage($image, $section, $pdf): void
-    {
-        // Save image file to its directory
-        $imagePath = $this->saveFile($image['file'], 'image');
-
-        // Create a record in the `images` table
-        $image = $section->images()->create([
-            'url' => $imagePath,
-            'alt' => $image['alt'],
-            'content' => $image['content'],
-        ]);
-
-        $pdfPath = $this->saveFile($pdf, 'pdf');
-
-        // Create a record in the `pdfs` table
-        $image->pdfs()->create([
-            'url' => $pdfPath,
         ]);
     }
 
@@ -52,7 +34,7 @@ class SectionController extends Controller
      */
     public function index()
     {
-        $sections = Section::query()->where('template', 'single')->orWhere('template', 'multiple')->with('images.pdfs')->latest()->paginate(20);
+        $sections = Section::query()->where('template', 'single')->orWhere('template', 'multiple')->orWhere('template', 'pdfTemplate')->with('images.pdfs')->latest()->paginate(20);
         return Inertia::render('Admin/Sections/index', ['sections' => $sections]);
     }
 
@@ -87,7 +69,24 @@ class SectionController extends Controller
 
             // Save images and their associated PDFs
             foreach ($request->images as $imageData) {
-                $this->saveImage($imageData, $section, $imageData['pdf']);
+                // Save image file to its directory
+                $imagePath = $this->saveFile($imageData['file'], 'image');
+                // Create a record in the `images` table
+                $image = $section->images()->create([
+                    'url' => $imagePath,
+                    'alt' => $imageData['alt'],
+                    'content' => $imageData['content'],
+                ]);
+
+                // Save PDF file to its directory
+
+                $pdfPath = $this->saveFile($imageData['pdf'], 'pdf');
+                $backgroundPath =  $this->saveFile($imageData['background'], 'background');
+                // Create a record in the `pdfs` table
+                $image->pdfs()->create([
+                    'url' => $pdfPath,
+                    'image_url' => $backgroundPath
+                ]);
             }
 
             // Commit the transaction
@@ -129,7 +128,7 @@ class SectionController extends Controller
     {
         $validate = $request->validate([
             'title' => ['required', 'string', 'max:255', Rule::unique('sections')->ignore($section->id)],
-            'template' => 'required|in:single,multiple',
+            'template' => 'required|in:single,multiple,pdfTemplate',
         ]);
 
         $section->update([
@@ -146,8 +145,11 @@ class SectionController extends Controller
     public function destroy(Section $section)
     {
         foreach ($section->images as $image) {
-
-            $this->deleteFile($image->pdfs->first());
+            $pdf = $image->pdfs->first();
+            if (File::exists('files/' . $pdf->image_url)) {
+                File::delete('files/' . $pdf->image_url);
+            }
+            $this->deleteFile($pdf);
 
             $image->pdfs()->delete();
 

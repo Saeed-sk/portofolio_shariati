@@ -1,10 +1,10 @@
-import React, {useState} from 'react';
+import React, {Fragment, useState} from 'react';
 import {Head, router} from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.jsx";
 import TextEditor from "@/Components/TextEditor.jsx";
 
 
-const Update = ({prevData, assetsPath, errors}) => {
+const Update = ({prevData, assetsPath, errors, template}) => {
     const [data, setData] = useState({
         type: 'update',
         id: prevData?.id ?? '',
@@ -12,9 +12,11 @@ const Update = ({prevData, assetsPath, errors}) => {
         content: prevData?.content ?? '',
         pdf: null,
         alt: prevData?.alt ?? '',
+        background: null,
+        template: template
     });
-
-    const [previewPdf, setPreviewPdf] = useState(null);
+    const templateLogic = template !== 'pdfTemplate';
+    const [backgroundPreview, setBackgroundPreview] = useState(null)
     const [preview, setPreview] = useState(null)
     const [processing, setProcessing] = useState(false);
     const onHandleChangeFile = (event) => {
@@ -33,10 +35,26 @@ const Update = ({prevData, assetsPath, errors}) => {
                     previewPdf: URL.createObjectURL(file),
                     pdf: file,
                 }));
-                setPreviewPdf(URL.createObjectURL(file));
             }
         }
     };
+    const onHandleChange = (event) => {
+        setData((prev) => ({
+            ...prev,
+            [event.target.id]: event.target.value,
+        }));
+    };
+
+    const onHandleChangeBackground = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setData((prev) => ({
+                ...prev,
+                background: file,
+            }));
+            setBackgroundPreview(URL.createObjectURL(file));
+        }
+    }
     const onHandleSubmit = async (event) => {
         event.preventDefault();
 
@@ -84,15 +102,16 @@ const Update = ({prevData, assetsPath, errors}) => {
                                 )}
                             </div>
 
-                            <div className="w-full">
-                                <label className="form-label" htmlFor={`content`}>Content</label>
-                                <TextEditor
-                                 name={'content'}
-                                 value={data.content}
-                                 onChange={(content) => setData((prev) => ({...prev, content}))}
-                                />
-                                {errors?.content && <p className="form-error">{errors.content}</p>}
-                            </div>
+                            {templateLogic && (
+                                <div className="w-full">
+                                    <label className="form-label" htmlFor={`content`}>Content</label>
+                                    <TextEditor
+                                        name={'content'}
+                                        value={data.content}
+                                        onChange={(content) => setData((prev) => ({...prev, content}))}
+                                    />
+                                    {errors?.content && <p className="form-error">{errors.content}</p>}
+                                </div>                            )}
 
                             {/* Alt text */}
                             <div className="w-full">
@@ -102,9 +121,7 @@ const Update = ({prevData, assetsPath, errors}) => {
                                     id={`alt`}
                                     className="form-input w-full"
                                     value={data.alt}
-                                    onChange={(event) =>
-                                        setData((prev) => ({...prev, alt: event.target.value}))
-                                    }
+                                    onChange={onHandleChange}
                                 />
                                 {errors?.alt && <p className="form-error">{errors.alt}</p>}
                             </div>
@@ -121,7 +138,36 @@ const Update = ({prevData, assetsPath, errors}) => {
                                 />
                                 {errors?.pdf && <p className="form-error">{errors.pdf}</p>}
                             </div>
+
+
+                            <Fragment>
+                                <label className="btn btn-secondary self-start" htmlFor="background">background</label>
+                                <input
+                                    id="background"
+                                    name="background"
+                                    className="hidden"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={onHandleChangeBackground}
+                                />
+                            </Fragment>
+                            {/* Images section */}
+
+                            {/* Image preview */}
+                            {errors?.background && <p className="form-error">{errors.background}</p>}
+
+                            <div
+                                className="h-full w-full rounded-lg overflow-hidden relative flex items-center justify-center">
+                                {backgroundPreview &&
+                                    <img className={'object-cover rounded-lg object-center w-full'}
+                                         src={String(backgroundPreview)}
+                                         alt={data.alt ?? ''}/>}
+                                {backgroundPreview === null && prevData?.pdfs?.image_url && (
+                                    <img src={assetsPath + prevData?.pdfs?.image_url} alt=""/>
+                                )}
+                            </div>
                         </div>
+
 
                         {/* Submit button */}
                         <div className="flex gap-2">

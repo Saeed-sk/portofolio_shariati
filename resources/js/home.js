@@ -3,12 +3,13 @@ import ScrollTrigger from "gsap/ScrollTrigger";
 import {gsap} from "gsap";
 import $ from "jquery";
 
+
 $(document).ready(function () {
     let scrollerElement = document.querySelector("#main-container");
 
-    const video = document.getElementById('my-video');
+    const video = $('#my-video')[0];
 
-    video.addEventListener('canplaythrough', function () {
+    video.oncanplay = function () {
         gsap.from(scrollerElement, {
             opacity: 0, duration: 0.5,
             onStart: () => {
@@ -17,9 +18,9 @@ $(document).ready(function () {
                 $('#main-container').removeClass('hidden')
             }
         });
-        // $('.loading-wrapper').addClass('hidden');
-        // $('#main-container').removeClass('hidden')
-    });
+        gsap.to('.info-nav', {opacity: 0, duration: 0.1});
+        gsap.to('.menu-nav', {opacity: 0, duration: 0.1});
+    };
 
 
     // Select the video element using vanilla JavaScript instead of jQuery
@@ -29,7 +30,6 @@ $(document).ready(function () {
     const locoScroll = new LocomotiveScroll({
         el: scrollerElement,
         smooth: true,
-        multiplier: 0.5,
         smartphone: {
             smooth: true
         },
@@ -56,7 +56,15 @@ $(document).ready(function () {
     gsap.to(".main-wrapper", {
         scrollTrigger: {
             trigger: "#main-container", scroller: "#main-container", scrub: true, start: "top top", end: "+=" + height
-        }, ease: "none", y: height
+        }, ease: "none", y: height,
+        onComplete: () => {
+            gsap.to('.info-nav', {opacity: 1, duration: 0.5});
+            gsap.to('.menu-nav', {opacity: 1, duration: 0.5});
+        },
+        onReverseComplete: () => {
+            gsap.to('.info-nav', {opacity: 0, duration: 0.5});
+            gsap.to('.menu-nav', {opacity: 0, duration: 0.5});
+        }
     });
 
     gsap.to('.video-wrapper', {
@@ -79,7 +87,7 @@ $(document).ready(function () {
         // Set up ScrollTrigger for each image-container
         gsap.to(container, {
             scrollTrigger: {
-                scroller: "#main-container", trigger: container, scrub: true, start: "bottom 50%", // Enter the container 100px before it reaches the bottom of the viewport
+                scroller: "#main-container", trigger: container, scrub: true, start: "bottom 75%", // Enter the container 100px before it reaches the bottom of the viewport
                 end: "bottom top-=400",  // Leave the container 100px before it reaches the top of the viewport
                 onEnter: () => {
                     $(container).find('figure').addClass('active-animation');

@@ -5,6 +5,7 @@ import Icon from "@/Components/Icon/Icon.jsx";
 import {summaryContent} from "@/helpers/summaryText.js";
 
 const Index = ({section, assetsPath}) => {
+    const templateLogic = Boolean(section.template !== 'pdfTemplate');
     const {data, setData, put, errors, processing} = useForm({
         title: section?.title, template: section?.template,
     })
@@ -21,7 +22,7 @@ const Index = ({section, assetsPath}) => {
         <Head title="sections-setting"/>
         <div dir="ltr" className="py-12">
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 flex flex-col gap-5">
-                <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-5 flex flex-col">
+                <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-5 flex flex-col ">
                     <label className="form-label" htmlFor="title">Menu Title</label>
                     <input
                         type="text"
@@ -33,7 +34,7 @@ const Index = ({section, assetsPath}) => {
                     />
                     {errors?.title && <p className="form-error">{errors.title}</p>}
 
-                    <label className="form-label" htmlFor="template">Template</label>
+                    <label className="form-label mt-2" htmlFor="template">Template</label>
                     <select
                         id="template"
                         name="template"
@@ -43,6 +44,7 @@ const Index = ({section, assetsPath}) => {
                         <option disabled value="not_selected">Select a template:</option>
                         <option value="single">Single Template</option>
                         <option value="multiple">Group Template</option>
+                        <option value="pdfTemplate">Pdf Template</option>
                     </select>
                     {errors?.template && <p className="form-error">{errors.template}</p>}
 
@@ -57,9 +59,9 @@ const Index = ({section, assetsPath}) => {
 
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg relative mb-24">
 
-                    <div className="p-6 fixed bottom-0 left-0">
+                    <div className="p-6 fixed bottom-0 left-0 ">
                         <Link href={route('sections.image.create', section.id)}>
-                            <div className="p-6 fixed bottom-0 left-0">
+                            <div className="p-6 fixed bottom-0 left-0 z-10">
                                 <Link href={route('sections.image.create', section.id)}>
                                     <div className="btn btn-primary px-1 py-1 rounded">
                                         <Icon name={'add'} className={'text-3xl'}/>
@@ -76,9 +78,11 @@ const Index = ({section, assetsPath}) => {
                                     <thead>
                                     <tr>
                                         <th className="px-4 py-2 border-b text-left text-sm sm:text-base">#</th>
-                                        <th className="px-4 py-2 border-b text-left text-sm sm:text-base">content</th>
-                                        <th className="px-4 py-2 border-b text-left text-sm sm:text-base">pdf</th>
+                                        {templateLogic &&
+                                            <th className="px-4 py-2 border-b text-left text-sm sm:text-base">content</th>}
                                         <th className="px-4 py-2 border-b text-left text-sm sm:text-base">image</th>
+                                        <th className="px-4 py-2 border-b text-left text-sm sm:text-base">pdf</th>
+                                        <th className="px-4 py-2 border-b text-left text-sm sm:text-base">background</th>
                                         <th className="px-4 py-2 border-b text-left text-sm sm:text-base">
                                             <span className="sr-only">Edit</span>
                                         </th>
@@ -86,26 +90,22 @@ const Index = ({section, assetsPath}) => {
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {section?.images?.map((image, index) => (<tr key={index}>
+                                    {section?.images?.map((image, index) => (
+                                        <tr key={index}>
                                             <td className="border px-4 py-2 text-sm sm:text-base">{image.id}</td>
 
-                                            <td className="border px-4 py-2 text-sm sm:text-base">
-                                                <p>
-                                                    {summaryContent({
-                                                        htmlContent: image?.content, maxLength: 20
-                                                    })}
-                                                </p>
-                                            </td>
-                                            <td className="border px-4 py-2 text-sm sm:text-base">{image?.pdfs ? (
-                                                <button
-                                                    onClick={() => {
-                                                        window.open(assetsPath + image?.pdfs?.url, '_blank')
-                                                    }}
-                                                    className="text-green-600  hover:text-green-800"
-                                                >
-                                                    <Icon name={'pdf'} className={'text-xl'}/>
-                                                </button>) : ('ندارد')}</td>
+                                            {
+                                                templateLogic &&
+                                                (<td className="border px-4 py-2 text-sm sm:text-base">
+                                                    <p>
+                                                        {summaryContent({
+                                                            htmlContent: image?.content, maxLength: 20
+                                                        })}
+                                                    </p>
+                                                </td>)
+                                            }
                                             <td className="border px-4 py-2 text-sm sm:text-base flex relative h-[70px] overflow-hidden justify-center">
+
                                                 <img
                                                     key={index}
                                                     onClick={() => {
@@ -115,7 +115,32 @@ const Index = ({section, assetsPath}) => {
                                                     src={assetsPath + image?.url}
                                                     alt={image?.alt}
                                                 />
+
                                             </td>
+
+                                            <td className="border px-4 py-2 text-sm sm:text-base text-center">{image?.pdfs ? (
+                                                <button
+                                                    onClick={() => {
+                                                        window.open(assetsPath + image?.pdfs?.url, '_blank')
+                                                    }}
+                                                    className="text-green-600  hover:text-green-800"
+                                                >
+                                                    <Icon name={'pdf'} className={'text-2xl'}/>
+                                                </button>) : ('ندارد')}
+                                            </td>
+
+                                            <td className="border px-4 py-2 text-sm sm:text-base flex relative h-[70px] overflow-hidden justify-center">
+                                                <img
+                                                    key={index}
+                                                    onClick={() => {
+                                                        window.open(assetsPath + image?.pdfs?.image_url, '_blank')
+                                                    }}
+                                                    className="mr-2 object-cover transition-all cursor-pointer top-1 h-[60px] border rounded z-0 hover:z-10 hover:scale-110"
+                                                    src={assetsPath + image?.pdfs?.image_url}
+                                                    alt={image?.alt}
+                                                />
+                                            </td>
+
                                             <td className="border px-4 py-2 text-sm sm:text-base">
                                                 <div className={'flex gap-3'}>
                                                     <Link

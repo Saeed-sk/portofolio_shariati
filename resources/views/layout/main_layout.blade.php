@@ -7,25 +7,17 @@
     <title>{{env('APP_NAME' , 'Laravel')}}</title>
 
     <!-- Styles / Scripts -->
-    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-        @vite([
+    @vite([
     'resources/css/locomotive-scroll.min.css',
     'resources/css/app.css',
+    'resources/css/font.css',
     'resources/js/navbar.js',
     'resources/js/home.js',
     ])
-    @else
-        @vite([
-  'resources/css/locomotive-scroll.min.css',
-  'resources/css/app.css',
-  'resources/js/navbar.js',
-  'resources/js/home.js'
-  ])
-    @endif
 
 </head>
 
-<body class="font-sans scroll-smooth bg-gray-100 ">
+<body class=" font-sans scroll-smooth bg-gray-100 max-h-svh">
 <x-menu-component/>
 @yield('content')
 </body>

@@ -5,6 +5,13 @@ import Pagination from "@/Components/Pagination.jsx";
 import Icon from "@/Components/Icon/Icon.jsx";
 
 const Index = ({sections, assetsPath}) => {
+    function changePage(page) {
+        router.get(route('sections.index'), {page: page}, {
+            preserveState: true,
+            replace: true
+        })
+    }
+
     return (
         <AuthenticatedLayout>
             <Head title="sections-setting"/>
@@ -12,7 +19,7 @@ const Index = ({sections, assetsPath}) => {
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg relative mb-24">
 
-                        <div className="p-6 fixed bottom-0 left-0">
+                        <div className="p-6 fixed bottom-0 left-0 z-10">
                             <Link href={route('sections.create')}>
                                 <div className="btn btn-primary px-1 py-1 rounded">
                                     <Icon name={'add'} className={'text-3xl'}/>
@@ -58,7 +65,8 @@ const Index = ({sections, assetsPath}) => {
                                                         ))}
                                                         {
                                                             section?.images?.length === 0 && (
-                                                                <p className="form-error text-center w-full mt-3">There is no data to display.</p>)
+                                                                <p className="form-error text-center w-full mt-3">There is
+                                                                    no data to display.</p>)
                                                         }
 
                                                     </td>
@@ -89,20 +97,16 @@ const Index = ({sections, assetsPath}) => {
 
                                         </table>
                                     ) : (
-                                        <p className="text-red-600 text-center m-10">There is no sections to display.</p>
+                                        <p className="text-red-600 text-center m-10">There is no sections to
+                                            display.</p>
                                     )
                                 }
-                                <Pagination currentPage={sections?.current_page} lastPage={sections?.last_page}
-                                            onPageChange={(page) => {
-                                                router.get(route('sections.index'), {page: page}, {
-                                                    preserveState: true,
-                                                    replace: true
-                                                })
-                                            }}/>
-
-                                {/*<div className="">*/}
-                                {/*    {{}}*/}
-                                {/*</div>*/}
+                                {sections?.data?.length > 0 && (
+                                    <Pagination
+                                        currentPage={sections?.current_page}
+                                        lastPage={sections?.last_page}
+                                        onPageChange={changePage}/>
+                                )}
 
                             </div>
                         </div>

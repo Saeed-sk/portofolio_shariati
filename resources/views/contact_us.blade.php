@@ -2,9 +2,9 @@
 
 @section('content')
 
-    <main class="relative min-h-screen w-full flex flex-col lg:flex-row gap-5 justify-center items-center">
-        <div class="w-full lg:w-1/4 ">
-            <img src="{{asset('storage/'.$section->images[0]->url)}}" alt="">
+    <main class="relative min-h-svh w-full flex flex-col lg:flex-row gap-5 justify-center items-center">
+        <div class="w-full lg:w-1/4 h-full">
+            <img class="w-full object-contain h-full" src="{{asset('files/'.$section->images[0]->url)}}" alt="">
         </div>
         <div class="w-full p-5 lg:p-0 lg:w-1/3 flex flex-col gap-5">
             <h3 class="text-5xl font-bold">{{$section->title}}</h3>

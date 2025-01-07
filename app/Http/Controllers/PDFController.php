@@ -16,7 +16,14 @@ class PDFController extends Controller
     public function index($id)
     {
         $pdf = PDF::query()->where('image_id', $id)->first();
-        return view('sections.pdf', ['id' => $id, 'pdf' => $pdf]);
+        if ($pdf && file_exists('files/' . $pdf->url)) {
+            return Response::make(file_get_contents('files/' . $pdf->url), 200, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="' . $pdf->url . '"',
+            ]);
+        } else {
+            abort(404, 'File not found.');
+        }
     }
 
     /**
@@ -41,7 +48,7 @@ class PDFController extends Controller
     public function show($id)
     {
         $pdf = PDF::query()->where('image_id', $id)->first();
-        $filePath = 'storage/' . $pdf->url;
+        $filePath = 'files/' . $pdf->url;
 
         return Response::make(file_get_contents($filePath), 200, [
             'Content-Type' => 'application/pdf',
@@ -56,7 +63,7 @@ class PDFController extends Controller
     public function streamPDF($id)
     {
         $pdf = PDF::query()->firstWhere('id', $id);
-        $path = public_path("storage/{$pdf->url}");
+        $path = public_path("files/{$pdf->url}");
 
         if (!file_exists($path)) {
             return response()->json(['error' => 'File not found'], 404);

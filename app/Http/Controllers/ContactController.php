@@ -16,7 +16,7 @@ class ContactController extends Controller
         return $request->validate([
             'title' => 'required|string|max:255',
             'template' => 'required|in:info',
-            'file' => $request->hasFile('file') ? 'required|file|mimes:jpeg,png,jpg,gif,webp|max:2048' : '',
+            'file' => $request->hasFile('file') ? 'required|file|mimes:jpeg,png,jpg,gif,webp,avif|max:5120' : '',
             'alt' => 'required|string|max:255',
             'content' => 'required|string',
         ]);
@@ -27,7 +27,7 @@ class ContactController extends Controller
         return $request->validate([
             'title' => 'required|string|max:255',
             'template' => 'required|in:contact',
-            'file' => $request->hasFile('file') ? 'required|file|mimes:jpeg,png,jpg,gif,webp|max:2048' : '',
+            'file' => $request->hasFile('file') ? 'required|file|mimes:jpeg,png,jpg,gif,webp,avif|max:5120' : '',
             'alt' => 'required|string|max:255',
             'content' => 'required|string',
         ]);

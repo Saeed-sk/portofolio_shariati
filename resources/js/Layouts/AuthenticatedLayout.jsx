@@ -30,7 +30,7 @@ export default function AuthenticatedLayout({header, children}) {
         });
     };
     return (
-        <div className="min-h-screen bg-gray-100">
+        <div className="min-h-svh bg-gray-100">
             <nav className="border-b border-gray-100 bg-white">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="flex h-16 justify-between">
@@ -54,6 +54,14 @@ export default function AuthenticatedLayout({header, children}) {
                                 >
                                     Landing
                                 </NavLink>
+
+                                <NavLink
+                                    href={route('links.menu.get')}
+                                    active={route().current('links.menu.get')}
+                                >
+                                    menu link
+                                </NavLink>
+
                                 <NavLink
                                     href={route('sections.index')}
                                     active={route().current('sections.index')}
@@ -188,6 +196,12 @@ export default function AuthenticatedLayout({header, children}) {
                             active={route().current('home.index')}
                         >
                             Landing
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('links.menu.get')}
+                            active={route().current('links.menu.get')}
+                        >
+                            menu link
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
                             href={route('sections.index')}
